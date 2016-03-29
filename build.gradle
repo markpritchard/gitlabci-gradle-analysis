@@ -1,0 +1,56 @@
+apply plugin: 'java'
+sourceCompatibility = 1.8
+
+apply plugin: 'checkstyle'
+checkstyle {
+    ignoreFailures true
+    toolVersion '6.17'
+}
+checkstyleMain {
+}
+checkstyleTest {
+}
+
+
+apply plugin: 'findbugs'
+findbugs {
+    ignoreFailures = true
+    toolVersion = '3.0.1'
+}
+
+apply plugin: 'pmd'
+pmd {
+    ignoreFailures = true
+    toolVersion = '5.4.1'
+
+    ruleSets = []
+}
+
+pmdMain {
+    ruleSetFiles = files(new File("config/pmd/pmd.xml"))
+    reports.xml.enabled = true
+    reports.html.enabled = false
+}
+
+pmdTest {
+    ruleSetFiles = files(new File("config/pmd/pmd.xml"))
+    reports.xml.enabled = true
+    reports.html.enabled = false
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'ch.qos.logback:logback-classic:1.1.6'
+    compile 'com.github.jknack:handlebars:4.0.5'
+    compile 'com.google.code.findbugs:findbugs:3.0.1'
+    compile 'com.google.guava:guava:19.0'
+    compile 'commons-io:commons-io:2.4'
+    compile 'org.jooq:joox:1.3.0'
+    compile 'org.slf4j:slf4j-api:1.7.19'
+
+    testCompile 'junit:junit:4.12'
+}

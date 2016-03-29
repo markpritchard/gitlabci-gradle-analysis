@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<ruleset name="cxad"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <description>PMD rules for production classes</description>
+
+    <rule ref="rulesets/java/basic.xml"/>
+
+    <rule ref="rulesets/java/braces.xml"/>
+
+    <rule ref="rulesets/java/clone.xml"/>
+
+    <rule ref="rulesets/java/design.xml">
+        <exclude name="UseUtilityClass"/>
+        <exclude name="ImmutableField"/>
+        <exclude name="AvoidSynchronizedAtMethodLevel"/>
+        <exclude name="AbstractClassWithoutAbstractMethod"/>
+        <exclude name="UseVarargs"/>
+        <exclude name="UnnecessaryLocalBeforeReturn"/>
+        <exclude name="MissingStaticMethodInNonInstantiatableClass"/>
+        <!-- Generates incorrect warnings when fields are annotated -->
+        <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
+        <!-- Generates a significant number of false warnings -->
+        <exclude name="CloseResource"/>
+    </rule>
+    <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
+        <properties>
+            <property name="problemDepth" value="5"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/java/empty.xml"/>
+
+    <rule ref="rulesets/java/finalizers.xml"/>
+
+    <rule ref="rulesets/java/imports.xml">
+        <exclude name="TooManyStaticImports"/>
+    </rule>
+
+    <rule ref="rulesets/java/logging-java.xml">
+        <exclude name="SystemPrintln"/>
+        <exclude name="GuardLogStatementJavaUtil"/>
+    </rule>
+
+    <rule ref="rulesets/java/optimizations.xml">
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="SimplifyStartsWith"/>
+        <exclude name="UseStringBufferForStringAppends"/>
+        <!-- Generates a significant number of false warnings -->
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
+
+    <rule ref="rulesets/java/strings.xml">
+        <exclude name="AppendCharacterWithChar"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="InsufficientStringBufferDeclaration"/>
+        <exclude name="ConsecutiveLiteralAppends"/>
+    </rule>
+
+    <rule ref="rulesets/java/typeresolution.xml">
+        <exclude name="LooseCoupling"/>
+        <exclude name="SignatureDeclareThrowsException"/>
+    </rule>
+
+    <rule ref="rulesets/java/unnecessary.xml">
+        <exclude name="UselessParentheses"/>
+    </rule>
+
+    <rule ref="rulesets/java/unusedcode.xml">
+        <!-- Checked by findbugs -->
+        <exclude name="UnusedPrivateMethod"/>
+    </rule>
+</ruleset>
