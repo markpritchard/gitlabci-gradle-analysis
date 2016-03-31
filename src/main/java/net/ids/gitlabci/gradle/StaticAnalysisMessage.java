@@ -6,7 +6,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * Simple struct that holds analysis output.
  */
 @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "Simple structure / bean class")
-class AnalysisMessage {
+class StaticAnalysisMessage {
 
     final String fileName;
     final String tool;
@@ -24,28 +24,28 @@ class AnalysisMessage {
 
     String infoUrl;
 
-    AnalysisMessage(final String tool, final String name) {
+    StaticAnalysisMessage(final String tool, final String name) {
         this.fileName = name;
         this.tool = tool;
     }
 
-    AnalysisMessage category(final String category) {
+    StaticAnalysisMessage category(final String category) {
         this.category = category;
         return this;
     }
 
-    AnalysisMessage infoUrl(final String infoUrl) {
+    StaticAnalysisMessage infoUrl(final String infoUrl) {
         this.infoUrl = infoUrl;
         return this;
     }
 
-    AnalysisMessage line(final int number) {
+    StaticAnalysisMessage line(final int number) {
         this.startLine = number;
         this.endLine = number;
         return this;
     }
 
-    AnalysisMessage lineAndColumnRange(final int startLine, final int endLine, final int startCol, final int endCol) {
+    StaticAnalysisMessage lineAndColumnRange(final int startLine, final int endLine, final int startCol, final int endCol) {
         this.startLine = startLine;
         this.endLine = endLine;
         this.startCol = startCol;
@@ -53,28 +53,28 @@ class AnalysisMessage {
         return this;
     }
 
-    AnalysisMessage lineRange(final int start, final int end) {
+    StaticAnalysisMessage lineRange(final int start, final int end) {
         this.startLine = start;
         this.endLine = end;
         return this;
     }
 
-    AnalysisMessage message(final String message) {
+    StaticAnalysisMessage message(final String message) {
         this.message = message;
         return this;
     }
 
-    AnalysisMessage method(final String method) {
+    StaticAnalysisMessage method(final String method) {
         this.method = method;
         return this;
     }
 
-    AnalysisMessage priority(final int priority) {
+    StaticAnalysisMessage priority(final int priority) {
         this.priority = priority;
         return this;
     }
 
-    AnalysisMessage rule(final String rule) {
+    StaticAnalysisMessage rule(final String rule) {
         this.rule = rule;
         return this;
     }

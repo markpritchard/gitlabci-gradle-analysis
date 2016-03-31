@@ -15,7 +15,6 @@ import org.joox.JOOX;
 import org.joox.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.github.jknack.handlebars.Template;
@@ -23,6 +22,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import net.ids.util.HandlebarsUtil;
 
 /**
  * Scans the nominated root directory looking for output from static analysis tools and merges them into a single HTML report.
@@ -33,29 +34,29 @@ public class StaticAnalysisTool {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticAnalysisTool.class);
 
-    private static final Template OUTPUT_TEMPLATE = HandlebarsUtil.compile(StaticAnalysisTool.class.getResourceAsStream("output.hbs"));
+    private static final Template OUTPUT_TEMPLATE = HandlebarsUtil.compile(StaticAnalysisTool.class.getResourceAsStream("static-analysis-output.hbs"));
 
     /**
      * Parses the output from the static analysis into a simple Java class for later merging / rendering.
      */
-    private static void parse(final Path path, final List<AnalysisMessage> messages) {
+    private static void parse(final Path path, final List<StaticAnalysisMessage> messages) {
         try {
             // Parse the analysis tool output
-            Document document = $(path.toFile()).document();
+            Match parsed = $(path.toFile());
 
             // Process based on the type of static analysis
             final String type = path.getName(path.getNameCount() - 2).toString();
             switch (type) {
                 case "checkstyle":
-                    parseCheckstyle(document, messages);
+                    parseCheckstyle(parsed, messages);
                     break;
 
                 case "findbugs":
-                    parseFindbugs(document, messages);
+                    parseFindbugs(parsed, messages);
                     break;
 
                 case "pmd":
-                    parsePMD(document, messages);
+                    parsePMD(parsed, messages);
                     break;
 
                 default:
@@ -71,8 +72,8 @@ public class StaticAnalysisTool {
      * <p>
      * Its a fairly straightforward format with each error instance located under /checkstyle/file/error.
      */
-    private static void parseCheckstyle(final Document document, final List<AnalysisMessage> messages) {
-        $(document).xpath("//checkstyle/file").map(JOOX::$).forEach(file -> {
+    private static void parseCheckstyle(final Match checkstyleOutput, final List<StaticAnalysisMessage> messages) {
+        checkstyleOutput.xpath("//checkstyle/file").map(JOOX::$).forEach(file -> {
             final String fileName = file.attr("name");
 
             file.find("error").map(JOOX::$).forEach(error -> {
@@ -97,7 +98,7 @@ public class StaticAnalysisTool {
                 }
                 final String rule = error.attr("source");
 
-                final AnalysisMessage message = new AnalysisMessage("checkstyle", fileName)
+                final StaticAnalysisMessage message = new StaticAnalysisMessage("checkstyle", fileName)
                         .line(lineNumber)
                         .message(messageText)
                         .priority(priority)
@@ -117,8 +118,8 @@ public class StaticAnalysisTool {
      * Each BugInstance can have Class, Class/SourceLine, Method, Method/SourceLine, SourceLine elements.
      * The SourceLine range narrows as you proceed down the hierarchy.
      */
-    private static void parseFindbugs(final Document document, final List<AnalysisMessage> messages) {
-        $(document).xpath("//BugCollection/BugInstance").map(JOOX::$).forEach(bug -> {
+    private static void parseFindbugs(final Match findbugsOutput, final List<StaticAnalysisMessage> messages) {
+        findbugsOutput.xpath("//BugCollection/BugInstance").map(JOOX::$).forEach(bug -> {
             // Grab information from the BugInstance element
             final int priority = Integer.parseInt(bug.attr("priority"));
             final String rule = bug.attr("type");
@@ -133,7 +134,7 @@ public class StaticAnalysisTool {
             int endLine = Integer.parseInt(classSourceLineMatch.attr("end"));
 
             // Prepare a message for the class
-            final AnalysisMessage message = new AnalysisMessage("findbugs", fileName)
+            final StaticAnalysisMessage message = new StaticAnalysisMessage("findbugs", fileName)
                     .lineRange(startLine, endLine)
                     .priority(priority)
                     .rule(rule)
@@ -162,8 +163,8 @@ public class StaticAnalysisTool {
         });
     }
 
-    private static void parsePMD(final Document document, final List<AnalysisMessage> messages) {
-        $(document).xpath("//pmd/file").map(JOOX::$).forEach(file -> {
+    private static void parsePMD(final Match pmdOutput, final List<StaticAnalysisMessage> messages) {
+        pmdOutput.xpath("//pmd/file").map(JOOX::$).forEach(file -> {
             final String fileName = file.attr("name");
 
             file.find("violation").map(JOOX::$).forEach(violation -> {
@@ -177,7 +178,7 @@ public class StaticAnalysisTool {
                 final String infoUrl = violation.attr("externalInfoUrl");
                 final int priority = Integer.parseInt(violation.attr("priority"));
 
-                final AnalysisMessage message = new AnalysisMessage("pmd", fileName)
+                final StaticAnalysisMessage message = new StaticAnalysisMessage("pmd", fileName)
                         .lineAndColumnRange(beginLine, endLine, beginCol, endCol)
                         .method(method)
                         .priority(priority)
@@ -190,7 +191,7 @@ public class StaticAnalysisTool {
     }
 
     private static boolean run(final String rootDir, final String outputFile) throws IOException {
-        final List<AnalysisMessage> messages = Lists.newArrayList();
+        final List<StaticAnalysisMessage> messages = Lists.newArrayList();
 
         // Find all relevant static analysis output
         Files.walk(Paths.get(rootDir))

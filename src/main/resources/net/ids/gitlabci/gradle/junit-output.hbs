@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <meta charset="utf-8"/>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.6/js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+                    $("#violations").tablesorter();
+                }
+        );
+    </script>
+</head>
+<body>
+<script type="text/javascript">
+    <!--
+    function toggle_visibility(id) {
+        var e = document.getElementById(id);
+        if (e.style.display == 'block')
+            e.style.display = 'none';
+        else
+            e.style.display = 'block';
+    }
+    //-->
+</script>
+<h2>Results</h2>
+<table id="results" class="table table-hover tablesorter">
+    <thead>
+    <tr>
+        <th>suite</th>
+        <th>count</th>
+        <th>skipped</th>
+        <th>failures</th>
+        <th>errors</th>
+        <th>time</th>
+        <th>stdout/stderr</th>
+        <th>test</th>
+        <th>time</th>
+        <th>message</th>
+        <th>stacktrace</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each results}}
+        {{#each right}}
+            <tr>
+                {{#if @first}}
+                    {{#with ../left}}
+                        <td rowspan="{{testCount}}">{{suiteName}}</td>
+                        <td rowspan="{{testCount}}">{{testCount}}</td>
+                        <td rowspan="{{testCount}}">{{skippedCount}}</td>
+                        <td rowspan="{{testCount}}">{{failureCount}}</td>
+                        <td rowspan="{{testCount}}">{{errorCount}}</td>
+                        <td rowspan="{{testCount}}">{{time}}</td>
+                        <td rowspan="{{testCount}}">
+                            {{#if stdout}}<a href="#" onclick="toggle_visibility('{{uniqueId}}_stdout');">stdout</a>
+                                <div id="{{uniqueId}}_stdout" style='display:none'>
+                                    <pre class="pre-scrollable">{{stdout}}</pre>
+                                </div>
+                            {{/if}}
+                            {{#if stderr}}
+                                {{#if stdout}}<br/>{{/if}}
+                                <a href="#" onclick="toggle_visibility('{{uniqueId}}_stderr');">stderr</a>
+                                <div id="{{uniqueId}}_stderr" style='display:none'>
+                                    <pre class="pre-scrollable">{{stderr}}</pre>
+                                </div>
+                            {{/if}}
+                        </td>
+                    {{/with}}
+                {{/if}}
+
+                <td>{{testName}}</td>
+                <td>{{time}}</td>
+                <td>{{message}}</td>
+                <td>
+                    {{#if error}}
+                        <a href="#" onclick="toggle_visibility('{{uniqueId}}_error');">stacktrace</a>
+                        <div id="{{uniqueId}}_error" style='display:none'>
+                            <pre class="pre-scrollable">{{error}}</pre>
+                        </div>
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    {{/each}}
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-package net.ids.gitlabci.gradle;
+package net.ids.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,7 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.helper.AssignHelper;
 import com.google.common.base.Charsets;
 
 /**
@@ -23,10 +24,14 @@ public class HandlebarsUtil {
 
     private static final Handlebars HANDLEBARS = new Handlebars();
 
+    static {
+        HANDLEBARS.registerHelpers(AssignHelper.class);
+    }
+
     /**
      * Compiles the provided template.
      */
-    public static Template compile(final String template) {
+    private static Template compile(final String template) {
         try {
             return HANDLEBARS.compileInline(StringUtils.defaultString(template));
         } catch (IOException e) {
@@ -55,18 +60,6 @@ public class HandlebarsUtil {
             template.apply(context, writer);
         } catch (IOException e) {
             throw new IllegalStateException(e);
-        }
-    }
-
-    /**
-     * Checks whether this template is valid.
-     */
-    public static boolean valid(final String template) {
-        try {
-            compile(template);
-            return true;
-        } catch (Throwable t) {
-            return false;
         }
     }
 }
