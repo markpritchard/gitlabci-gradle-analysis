@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joox.JOOX;
 import org.joox.Match;
@@ -98,6 +99,9 @@ public class JUnitAnalysisTool {
             LOG.error("No JUnit test files found.");
             return false;
         } else {
+            // Sort the results
+            sort(results);
+
             // Render the output file
             final Map<String, Object> model = Maps.newHashMap();
             model.put("results", results);
@@ -121,6 +125,29 @@ public class JUnitAnalysisTool {
                 return true;
             }
         }
+    }
+
+    private static void sort(final List<Pair<JUnitTestSuite, List<JUnitTestCase>>> results) {
+        // Order the results by fail/pass then by suite name
+        results.sort((left, right) -> {
+            // Sort failures first
+            int comparison = Boolean.compare(right.getLeft().hasFailures(), left.getLeft().hasFailures());
+            if (comparison == 0) {
+                comparison = left.getLeft().suiteName.compareTo(right.getLeft().suiteName);
+            }
+
+            return comparison;
+        });
+
+        // Now sort each of the tests by fail / pass then name
+        results.stream().map(Pair::getRight).forEach(testCases -> testCases.sort((left, right) -> {
+            int comparison = Boolean.compare(StringUtils.isEmpty(left.error), StringUtils.isEmpty(right.error));
+            if (comparison == 0) {
+                comparison = left.testName.compareTo(right.testName);
+            }
+
+            return comparison;
+        }));
     }
 
     /**

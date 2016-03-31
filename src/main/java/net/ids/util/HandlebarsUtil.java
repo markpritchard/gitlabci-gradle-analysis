@@ -14,6 +14,7 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.helper.AssignHelper;
 import com.google.common.base.Charsets;
 
@@ -56,7 +57,7 @@ public class HandlebarsUtil {
      */
     public static void render(final Template template, final Map<String, ?> values, final Writer writer) {
         try {
-            final Context context = Context.newBuilder(values).resolver(MapValueResolver.INSTANCE, FieldValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE).build();
+            final Context context = Context.newBuilder(values).resolver(MapValueResolver.INSTANCE, FieldValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE, MethodValueResolver.INSTANCE).build();
             template.apply(context, writer);
         } catch (IOException e) {
             throw new IllegalStateException(e);

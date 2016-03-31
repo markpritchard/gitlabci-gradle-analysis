@@ -29,7 +29,7 @@
     //-->
 </script>
 <h2>Results</h2>
-<table id="results" class="table table-hover tablesorter">
+<table id="results" class="table table-hover table-condensed tablesorter">
     <thead>
     <tr>
         <th>suite</th>
@@ -51,7 +51,7 @@
             <tr>
                 {{#if @first}}
                     {{#with ../left}}
-                        <td rowspan="{{testCount}}">{{suiteName}}</td>
+                        <td {{#if hasFailures}}class="warning"{{/if}} rowspan="{{testCount}}">{{suiteName}}</td>
                         <td rowspan="{{testCount}}">{{testCount}}</td>
                         <td rowspan="{{testCount}}">{{skippedCount}}</td>
                         <td rowspan="{{testCount}}">{{failureCount}}</td>
@@ -74,7 +74,7 @@
                     {{/with}}
                 {{/if}}
 
-                <td>{{testName}}</td>
+                <td {{#if error}}class="danger"{{/if}}>{{testName}}</td>
                 <td>{{time}}</td>
                 <td>{{message}}</td>
                 <td>

@@ -32,4 +32,8 @@ class JUnitTestSuite {
         this.stdout = stdout;
         this.stderr = stderr;
     }
+
+    public boolean hasFailures() {
+        return failureCount > 0 || errorCount > 0;
+    }
 }

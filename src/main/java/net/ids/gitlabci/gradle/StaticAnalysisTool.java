@@ -60,7 +60,7 @@ public class StaticAnalysisTool {
                     break;
 
                 default:
-                    throw new IllegalStateException("Unknown static analysis type: " + type);
+                    LOG.warn("Unknown static analysis type {} for file {}", type, path);
             }
         } catch (SAXException | IOException e) {
             Throwables.propagate(e);
