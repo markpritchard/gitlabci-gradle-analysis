@@ -88,7 +88,8 @@ public class JUnitAnalysisTool {
                     final String fileName = path.getFileName().toString();
 
                     // Ignore if not a file or not in the expected subdirectory or not the expected name
-                    if (Files.isRegularFile(path) && path.toString().contains("/build/test-results/") && fileName.startsWith("TEST-") && fileName.endsWith(".xml")) {
+                    final String pathAsString = path.toString();
+                    if (Files.isRegularFile(path) && pathAsString.contains("/build/") && pathAsString.contains("/test-results/") && fileName.startsWith("TEST-") && fileName.endsWith(".xml")) {
                         LOG.info("Processing file {}", path);
                         parse(path, results);
                     }
