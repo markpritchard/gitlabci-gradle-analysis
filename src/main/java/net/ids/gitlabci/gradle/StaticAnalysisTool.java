@@ -199,7 +199,8 @@ public class StaticAnalysisTool {
                     final String fileName = path.getFileName().toString();
 
                     // Ignore if not a file or not in the expected subdirectory or not the expected name
-                    if (Files.isRegularFile(path) && path.toString().contains("/build/reports/") && ("main.xml".equals(fileName) || "test.xml".equals(fileName))) {
+                    final String pathAsString = path.toString();
+                    if (Files.isRegularFile(path) && pathAsString.contains("/build/") && pathAsString.contains("/reports/") && ("main.xml".equals(fileName) || "test.xml".equals(fileName))) {
                         LOG.info("Processing file {}", path);
                         parse(path, messages);
                     }
